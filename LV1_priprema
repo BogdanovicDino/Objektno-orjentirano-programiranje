@@ -1,0 +1,425 @@
+using System;
+using System.ComponentModel.Design;
+using System.Diagnostics.Metrics;
+
+
+public enum JambScoreType
+{
+    Jamb,
+    Skala,
+    Nista
+}
+
+
+
+class Dice
+{
+    int state = 0;
+    int sides = 6;
+    Random rand = new Random();
+    int currentValue=1;
+    public void Roll()
+    {
+       currentValue=rand.Next(1, sides + 1);
+    }
+
+
+
+
+    public int CurrentValue
+    {
+        get { return currentValue; }
+        set { currentValue = value; }
+    }
+
+
+    public int Getstate()
+            {
+        return state;
+    }
+
+    public void Lock()
+    {
+        state = 1;
+    }
+}
+
+
+
+class Jamb_hand
+{
+    Dice dice1 = new Dice();
+    Dice dice2 = new Dice();
+    Dice dice3 = new Dice();
+    Dice dice4 = new Dice();
+    Dice dice5 = new Dice();
+    Dice dice6 = new Dice();
+
+
+
+    public int GetDiceValue(int diceNumber)
+    {
+        switch(diceNumber)
+        {
+            case 1:
+                return dice1.CurrentValue;
+            case 2:
+                return dice2.CurrentValue;
+            case 3:
+                return dice3.CurrentValue;
+            case 4:
+                return dice4.CurrentValue;
+            case 5:
+                return dice5.CurrentValue;
+            case 6:
+                return dice6.CurrentValue;
+            default:
+                Console.WriteLine("Invalid dice number.");
+                return -1;
+        }
+    }
+    public void RollAllUnlockedDice()
+    {
+        if(dice1.Getstate() == 0)
+             dice1.Roll();
+        if(dice2.Getstate() == 0)
+            dice2.Roll();  
+        if(dice3.Getstate() == 0)
+             dice3.Roll();
+        if(dice4.Getstate() == 0)
+             dice4.Roll();
+        if(dice5.Getstate() == 0)
+             dice5.Roll();
+        if(dice6.Getstate() == 0)
+             dice6.Roll();
+    }
+
+    public void PrintDiceValues()
+    {
+        Console.WriteLine("Dice values: {0}, {1}, {2}, {3}, {4}, {5}",
+            dice1.CurrentValue,
+            dice2.CurrentValue,
+            dice3.CurrentValue,
+            dice4.CurrentValue,
+            dice5.CurrentValue,
+            dice6.CurrentValue);
+    }
+    public void lockDice(int diceNumber)
+    {
+        switch(diceNumber)
+        {
+            case 1:
+                dice1.Lock();
+                break;
+            case 2:
+                dice2.Lock();
+                break;
+            case 3:
+                dice3.Lock();
+                break;
+            case 4:
+                dice4.Lock();
+                break;
+            case 5:
+                dice5.Lock();
+                break;
+            case 6:
+                dice6.Lock();
+                break;
+            default:
+                Console.WriteLine("Invalid dice number.");
+                break;
+        }
+    }
+
+    public int Summe()
+    {
+        return dice1.CurrentValue + dice2.CurrentValue + dice3.CurrentValue +
+               dice4.CurrentValue + dice5.CurrentValue + dice6.CurrentValue;
+    }
+
+
+
+
+    public int[] GetAsArray()
+    {
+        int [] array = new int[6];
+        array[0] = dice1.CurrentValue;
+        array[1] = dice2.CurrentValue;
+        array[2] = dice3.CurrentValue;
+        array[3] = dice4.CurrentValue;
+        array[4] = dice5.CurrentValue;
+        array[5] = dice6.CurrentValue;
+
+        return array;
+    }
+        
+}
+
+
+
+
+class Program
+{
+    static void Main()
+    {
+        Jamb_hand hand = new Jamb_hand();
+
+        /* for (int i = 0; i < 3; i++)
+         {
+             hand.RollAllUnlockedDice();
+             hand.PrintDiceValues();
+             Console.WriteLine("Želite li zadržati koju od kocaka? 1-DA, 0-NE");
+
+             int temp = int.Parse(Console.ReadLine());
+             if (temp == 1)
+             {
+                 Console.WriteLine("Koliko kocaka zelite zadrzati?");
+
+                 int broj = int.Parse(Console.ReadLine());
+                 for (int j = 0; j < broj; j++)
+                 {
+                     Console.WriteLine("Unesite redni broj kocke koju zelite zadrzati (1-6):");
+                     int redni = int.Parse(Console.ReadLine());
+
+                     hand.lockDice(redni);
+                 }
+             }
+         }
+         Console.WriteLine("Finalne vrijednosti kocaka:"); 
+         hand.PrintDiceValues();
+
+         int []rezultati= hand.GetAsArray();
+
+
+         Console.Write("Vrijednosti: [");
+         for (int i = 0; i < rezultati.Length; i++)
+         {
+             Console.Write(rezultati[i]);
+
+
+             if (i < rezultati.Length - 1)
+             {
+                 Console.Write(", ");
+             }
+         }
+         Console.WriteLine("]");
+
+
+
+
+
+         Console.WriteLine("Ukupna suma kocaka je: " + hand.Summe());
+     } */
+
+
+
+
+
+    int counter = 0;
+
+    while (hand.Summe() != 36)
+
+    {
+        hand.RollAllUnlockedDice();
+        hand.PrintDiceValues();
+        Console.WriteLine(HandEvaluation.EvaluateHand(hand));
+            counter++;
+        for (int i = 1; i <= 6; i++)
+        {
+            if (hand.GetDiceValue(i) == 6)
+            {
+                hand.lockDice(i);
+            }
+        }
+    }
+    Console.WriteLine("Pobjedili ste u " + counter + " pokušaja!");
+
+}
+    
+
+}
+
+
+class HandEvaluation
+{
+    public static JambScoreType EvaluateHand(Jamb_hand hand)
+    {
+        int[] diceValues =hand.GetAsArray();
+        Array.Sort(diceValues);
+
+        if (    diceValues[0] == diceValues[1] &&
+                diceValues[0] == diceValues[2] &&
+                diceValues[0] == diceValues[3] &&
+                diceValues[0] == diceValues[4] &&
+                diceValues[0] == diceValues[5] )
+        {
+            return JambScoreType.Jamb;
+        }
+        else if (diceValues[5] > diceValues[4] &&
+                diceValues[4] > diceValues[3] &&
+                diceValues[3] > diceValues[2] &&
+                diceValues[2] > diceValues[1] &&
+                diceValues[1] > diceValues[0] )
+                 
+        {
+            return JambScoreType.Skala;
+        }
+        else
+        {
+            return JambScoreType.Nista;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRVI:
+using System;
+
+
+
+class Kockica
+{
+   private int brojStranica;
+   private int trenutnaVrijednost;
+   private Random nasumična = new Random();
+
+
+    public Kockica(int brojStranica, int trenutnaVrijednost, Random rand)
+    {
+        this.brojStranica = brojStranica;
+        this.trenutnaVrijednost = trenutnaVrijednost;
+        this.nasumična = rand;
+    }
+
+
+    public Kockica()
+    {
+        this.brojStranica = 6;
+        this.trenutnaVrijednost = 1;
+        this.nasumična = new Random();
+    }
+
+    public void postaviVrijednost(int vrijednost)
+    {
+        if (vrijednost > brojStranica )
+        { trenutnaVrijednost = brojStranica; }
+        else if(vrijednost < 1)
+        { trenutnaVrijednost = 1; }
+        else
+        { trenutnaVrijednost = vrijednost; }
+    }
+
+
+    public int Roll()
+    {
+        trenutnaVrijednost = nasumična.Next(1, brojStranica + 1);  // brojsStranica+1 jer je gornja granica isključiva 
+        return trenutnaVrijednost;
+    }
+
+
+    public int GetSideCount()
+    {
+        return brojStranica;
+    }
+
+
+    public int GetRolledNumber()
+    {
+        return trenutnaVrijednost;
+    }
+
+    public void SetRolledNumber(int vrijednost)
+    {
+        postaviVrijednost(vrijednost);
+    }
+
+
+
+    public double RunExperiment()
+    {
+        int brojBacanja = 100;
+        int targetValue = 3;
+        Kockica kocka = new Kockica();
+
+        int countTarget = 0;
+                for (int i = 0; i < brojBacanja; i++)
+        {
+            kocka.Roll();
+                        if (kocka.GetRolledNumber() == targetValue)
+            {
+                countTarget++;
+            }
+        }
+        return ((double)countTarget / brojBacanja) * 100;
+    }
+
+    public double RunExperiment(int brojBacanja, int targetValue)
+    {
+        Kockica kocka = new Kockica(20,1, new Random());
+        int countTarget = 0;
+                for (int i = 0; i < brojBacanja; i++)
+        {
+            kocka.Roll();
+                        if (kocka.GetRolledNumber() == targetValue)
+            {
+                countTarget++;
+            }
+        }
+        return ((double)countTarget / brojBacanja)*100;
+    }
+
+
+
+
+
+    public static void RunDemo()
+ {
+    Kockica first = new Kockica();
+    Kockica second = new Kockica(20, 6, new Random());
+     Console.WriteLine($"First die: {first.GetSideCount()}, rolled: {first.GetRolledNumber()}");
+    Console.WriteLine($"First die: {second.GetSideCount()}, rolled: {second.GetRolledNumber()}");
+     first.SetRolledNumber(6);
+    second.SetRolledNumber(99);
+     Console.WriteLine($"First die: {first.GetSideCount()}, rolled: {first.GetRolledNumber()}");
+     Console.WriteLine($"First die: {second.GetSideCount()}, rolled: {second.GetRolledNumber()}");
+    first.Roll();
+    second.Roll();
+    Console.WriteLine($"First die: {first.GetSideCount()}, rolled: {first.GetRolledNumber()}");
+    Console.WriteLine($"First die: {second.GetSideCount()}, rolled: {second.GetRolledNumber()}");
+
+
+        Console.WriteLine($"Da bi se dobio broj 3 na standardnoj kockici, vjerojatnost je priblizna {first.RunExperiment()}");
+        Console.WriteLine($"Da bi se dobio broj 7 na kockici sa 20 strana , vjerojatnost je priblizna {second.RunExperiment(1000, 7)}");
+
+        Console.WriteLine($"Broj stranica kocke koristene u drugom eksperimentu je {second.GetSideCount()} a trazena vrijednost bila je 7");
+ }
+
+
+
+}
+
+class Program
+{
+    static void Main()
+    {
+        Kockica.RunDemo();
+    }
+}
