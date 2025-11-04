@@ -1,0 +1,117 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LV2_VJEZBA.klase
+{
+    public class Stats
+    {
+        int wonGames;
+        int lostGames;
+        int drawnGames;
+        int goalsScored;
+        int goalsConceded;
+
+
+
+        public Stats()
+        {
+            this.wonGames = 0;
+            this.lostGames = 0;
+            this.drawnGames = 0;
+            this.goalsScored = 0;
+            this.goalsConceded = 0;
+        }
+
+        public Stats(int wonGames, int lostGames, int drawnGames, int goalsScored, int goalsCondeded)
+        {
+            this.wonGames = wonGames;
+            this.lostGames = lostGames;
+            this.drawnGames = drawnGames;
+            this.goalsScored = goalsScored;
+            this.goalsConceded = goalsCondeded;
+        }
+
+        public int PlayedGames { get => wonGames + lostGames + drawnGames; }
+
+        public int Points { get => (wonGames * 3) + drawnGames; }
+
+        public int GoalDifference { get => goalsScored - goalsConceded; }
+
+        public void Add(int goalsFor, int goalsAgainst)
+        {
+            this.goalsScored = this.goalsScored + goalsFor;
+            this.goalsConceded = this.goalsConceded + goalsAgainst;
+
+            if (goalsFor > goalsAgainst) {
+                this.wonGames = this.wonGames + 1;
+                                            }
+            else if (goalsFor < goalsAgainst) { 
+                this.lostGames = this.lostGames + 1;
+                                                 }
+            else {
+                this.drawnGames = this.drawnGames + 1;
+            }
+        }
+
+        public string ToStringg()
+        {
+            return $"games played: {PlayedGames}, games won: {wonGames}, games lost: {lostGames}, games drawn: {drawnGames}," +
+                  $" goals scored: {goalsScored}, goals conceded: {goalsConceded}, goal difference: {GoalDifference}, points: {Points}";
+        }
+
+
+        //• operator koji omogu´cuje zbrajanje dva objekta,
+
+        public static Stats operator +(Stats s1, Stats s2)
+        {
+            return new Stats()
+            {
+                wonGames = s1.wonGames + s2.wonGames,
+                lostGames = s1.lostGames + s2.lostGames,
+                drawnGames = s1.drawnGames + s2.drawnGames,
+                goalsScored = s1.goalsScored + s2.goalsScored,
+                goalsConceded = s1.goalsConceded + s2.goalsConceded
+            };
+        }
+
+        //operator > koji omogu´cuje usporedbu tako da se najprije gleda broj ostvarenih
+        // bodova, a ako je on jednak u obzir se uzima gol razlika
+
+        public static Stats operator >(Stats s1, Stats s2)
+        {
+            if (s1.Points > s2.Points || (s1.Points == s2.Points && s1.GoalDifference > s2.GoalDifference))
+            {
+                return s1;
+            }
+            else if (s2.Points > s1.Points || (s2.Points == s1.Points && s2.GoalDifference > s1.GoalDifference))
+            {
+                return s2;
+            }
+            else
+            {
+                return null;            //ako su jednaki
+            }
+        }
+
+
+        public static Stats operator <(Stats s1, Stats s2)
+        {
+            if (s1.Points < s2.Points || (s1.Points == s2.Points && s1.GoalDifference < s2.GoalDifference))
+            {
+                return s1;
+            }
+            else if (s2.Points < s1.Points || (s2.Points == s1.Points && s2.GoalDifference < s1.GoalDifference))
+            {
+                return s2;
+            }
+            else
+            {
+                return null;            //ako su jednaki
+            }
+        }
+    }
+}

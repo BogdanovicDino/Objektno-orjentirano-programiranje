@@ -1,0 +1,75 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace LV2_VJEZBA.klase
+{
+    public class Team
+    {
+        public string Name { get; set; }
+        public Stats Statistics { get; set; }
+        public Form CurrentForm { get; set; }
+
+
+        public Team(string name)
+        {
+            this.Name = name;
+            this.Statistics = new Stats();
+            this.CurrentForm = new Form();
+        }
+
+
+        public string ReturnShortName()
+        {
+            if (string.IsNullOrWhiteSpace(Name))
+                return "";
+
+            string shortName = Name.Trim().ToUpper();
+            return shortName.Length <= 3 ? shortName : shortName.Substring(0, 3);
+        }
+
+
+        public override string ToString()
+        {
+            return $"{Name} - Stats: {Statistics.ToStringg()}, {CurrentForm.FormToString()}";
+        }
+
+        /*
+         *metodu koja za predanu utakmicu (Match instancu) ispravno aˇzurira stanje objekta,
+            pri ˇcemu se aˇzurira i statistika i forma 
+         */
+
+        public void UpdateTeamAfterMatch(Match match)
+        {
+            // Ako tim igra doma
+            if (match.HomeTeam == this.Name)
+            {
+                this.Statistics.Add(match.HomeGoals, match.AwayGoals);
+
+                if (match.HomeGoals > match.AwayGoals)
+                    this.CurrentForm.AddLatest(MatchOutcome.Win);
+                else if (match.HomeGoals < match.AwayGoals)
+                    this.CurrentForm.AddLatest(MatchOutcome.Loss);
+                else
+                    this.CurrentForm.AddLatest(MatchOutcome.Draw);
+            }
+            // Ako tim igra kao gost
+            else if (match.AwayTeam == this.Name)
+            {
+                this.Statistics.Add(match.AwayGoals, match.HomeGoals);
+
+                if (match.AwayGoals > match.HomeGoals)
+                    this.CurrentForm.AddLatest(MatchOutcome.Win);
+                else if (match.AwayGoals < match.HomeGoals)
+                    this.CurrentForm.AddLatest(MatchOutcome.Loss);
+                else
+                    this.CurrentForm.AddLatest(MatchOutcome.Draw);
+            }
+            // Inače tim ne sudjeluje → ne radi ništa
+        }
+
+    }
+}

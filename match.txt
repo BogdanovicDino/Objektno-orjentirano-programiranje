@@ -1,0 +1,50 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LV2_VJEZBA.klase
+{
+    public enum MatchOutcome
+    {
+        Win, Draw, Loss, Unavailable
+    }
+
+    public class Match
+    {
+        public DateTime PlayedAt { get; private set; }
+        public string HomeTeam { get; private set; }
+        public string AwayTeam { get; private set; }
+        public int HomeGoals { get; private set; }
+        public int AwayGoals { get; private set; }
+
+        public Match(DateTime playedAt, string homeTeam, string awayTeam, int homeGoals, int awayGoals)
+        {
+            this.PlayedAt = playedAt;
+            this.HomeTeam = homeTeam;
+            this.AwayTeam = awayTeam;
+            this.HomeGoals = homeGoals;
+            this.AwayGoals = awayGoals;
+        }
+
+        public Match()
+        {
+            this.PlayedAt = DateTime.MinValue;
+            this.HomeTeam = string.Empty;
+            this.AwayTeam = string.Empty;
+            this.HomeGoals = 0;
+            this.AwayGoals = 0;
+        }
+
+
+       /* public override string ToString()
+        {
+            return $"{PlayedAt.ToShortDateString()}: {HomeTeam} {HomeGoals} - {AwayGoals} {AwayTeam}";
+        }
+       */
+    }
+
+   
+
+    }

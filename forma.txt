@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using LV2_VJEZBA.klase;
+
+namespace LV2_VJEZBA.klase
+{
+
+
+    public class Form
+    {
+
+        int maxCount = 5;
+        int currentCount = 0;
+        MatchOutcome[] outcomes = new MatchOutcome[5];
+        
+
+        public Form()
+        {
+        }
+        public void AddLatest(MatchOutcome outcome)
+        {
+            if (currentCount < maxCount)
+            {
+                outcomes[currentCount] = outcome;
+                currentCount++;
+            }
+            else
+            {
+                // Pomakni sve ulijevo
+                for (int i = 1; i < maxCount; i++)
+                {
+                    outcomes[i - 1] = outcomes[i];
+                }
+                outcomes[maxCount - 1] = outcome;
+            }
+        }
+
+        public  string FormToString()
+        {
+            // Pretpostavimo da je outcomes array od 5 elemenata
+            return $"Form: {outcomes[0]}, {outcomes[1]}, {outcomes[2]}, {outcomes[3]}, {outcomes[4]}";
+        }
+
+        public MatchOutcome this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= currentCount)
+                    throw new IndexOutOfRangeException();
+                return outcomes[index];
+            }
+            set
+            {
+                if (index < 0 || index >= currentCount)
+                    throw new IndexOutOfRangeException();
+                outcomes[index] = value;
+            }
+        }
+
+
+        /*
+         metodu koja provjerava je li forma ekipe dobra ili ne, pri ˇcemu na dobru formu
+         ukazuje broj pobjeda medu posljednjih pet ishoda (npr. [Win, Loss, Loss, Win,
+         Draw] ne predstavlja dobru formu, dok [Win, Loss, Loss, Win, Win] predstavlja).
+
+         */
+
+        public bool IsGood()
+        {
+            int winCount = 0;
+            for (int i= 0; i<5; i++)
+            {
+                if (outcomes[i] == MatchOutcome.Win)
+                {
+                    winCount++;
+                }
+            }
+            if(winCount >=3)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+
+}

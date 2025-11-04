@@ -1,0 +1,36 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace LV2_VJEZBA.klase
+{
+    internal static class MatchAnalythics
+    {
+
+
+        public static TimeSpan FindDifferenceInTime(Match dt1, Match dt2)
+        {
+            return dt2.PlayedAt - dt1.PlayedAt;
+        }
+
+        public static bool AreBothTeamsInGoodForm(Form ekipa1, Form ekipa2)
+        {
+            // TREbAM SKONTAT PROVJERU OBJE EKIPE 
+
+
+            if(ekipa1.IsGood() && ekipa2.IsGood())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+    }
+}
