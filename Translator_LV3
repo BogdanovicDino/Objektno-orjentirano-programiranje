@@ -1,0 +1,96 @@
+using LV3.Spaceship;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LV3.Spaceship
+{
+    public abstract class Translator
+    {
+        public  string Language { get; private set; }
+
+        public Translator(string language)
+        {
+            this.Language = language;
+        }
+
+        public virtual string Translate(string text)
+        {
+            return $"[Translated to {Language}]: {text}";
+        }
+    }
+
+
+
+    public class Gaen : Translator
+    {
+        //each vowel is replaced with 2 of the same tipe and whole sentence is converted to upper
+       
+
+        public Gaen() : base("Gaen")
+        {
+        }
+
+        public override string Translate(string text)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in text)
+            {
+                if ("aeiouAEIOU".Contains(c))
+                {
+                    sb.Append(c);
+                    sb.Append(c);
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            return $"[Translated to {Language}]: {sb.ToString().ToUpper()}";
+        }
+    }
+
+
+
+
+    public class Ilmoir : Translator
+    {
+        public Ilmoir() : base("Ilmoir") { }
+
+        // remove every vowel from the text and foreach letter "r" replace it with triple "rrr" and convert whole sentence toupper
+
+
+        public override string Translate(string text)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (char c in text)
+            {
+                if ("aeiouAEIOU".Contains(c))
+                {
+                    continue; // skip vowels
+                }
+                else if (c == 'r')
+                {
+                    sb.Append("rrr");
+                }
+                else if (c == 'R')
+                {
+                    sb.Append("RRR");
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            return $"[Translated to {Language}]: {sb.ToString().ToUpper()}";
+        }
+
+    }
+
+
+
+
+
+}
