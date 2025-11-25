@@ -1,0 +1,41 @@
+namespace LV3.Spaceship
+{
+    class Program
+    {
+        static void Main()
+        {
+            Random generator = new Random();
+
+            
+            Spaceship[] ships = new Spaceship[]
+            {
+                new Scout(10, 0, 0.6f, 1, generator),
+                new Bomber(100, 100, 15, 5, 30),
+                new Bomber(30, 0, 20, 5, 30),
+                new Scout(40, 100, 0.2f, 3, generator),
+                new Bomber(100, 100, 18, 5, 30),
+                new Scout(50, 100, 0.4f, 2, generator)
+            };
+
+            
+            Fleet fleet = new Fleet(new Gaen());
+
+           
+            foreach (var ship in ships)
+                fleet.AddShip(ship);
+
+           
+            string message = "All your base are belong to us!";
+
+            
+            Console.WriteLine("Gaen translation:");
+            Console.WriteLine(fleet.Broadcast(message));
+
+            fleet.ChangeTranslator(new Ilmoir());
+
+            
+            Console.WriteLine("\nIlmoir translation:");
+            Console.WriteLine(fleet.Broadcast(message));
+        }
+    }
+}
