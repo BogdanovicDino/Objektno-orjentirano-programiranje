@@ -1,0 +1,65 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+
+namespace LV3.Spaceship
+{
+    public class Fleet
+    {
+        private List<Spaceship> ships;
+        private Translator translator;
+
+        public Fleet(Translator translator)
+        {
+            this.translator = translator;
+            ships=new List<Spaceship>();
+        }
+
+
+
+        public void AddShip(Spaceship spaceship)
+        {
+            ships.Add(spaceship);
+        }
+
+        public void ChangeTranslator(Translator newTranslator)
+        {
+            this.translator = newTranslator;
+        }
+
+
+
+
+        public void AttackTarget(Spaceship target)
+        {
+            foreach(var ship in ships)
+            {
+                if (ship.IsFlyable())
+                {
+                    ship.Attack(target);
+                }
+            }
+       
+        }
+
+        public void AttackFromWeakest(Spaceship target)
+        {
+            var weakest = ships
+                .Where(s => s.IsFlyable())
+                .OrderBy(s => s.Energy)
+                .FirstOrDefault();
+
+            weakest?.Attack(target);
+        }
+
+        // Prevedi i pošalji poruku
+        public string Broadcast(string message)
+        {
+            return translator.Translate(message);
+        }
+    }
+}
